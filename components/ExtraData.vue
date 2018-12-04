@@ -9,9 +9,11 @@
       <v-card v-if="showing">
         <v-card-title primary-title>
           <div class="note-info">
-            <h3 class="title">{{ words }}</h3>
-            <h3 class="title">{{ time }}</h3>
-            <h3 class="title">Creado el {{ created }}</h3>
+            <ul>
+              <li>Created: {{ created }}</li>
+              <li>Words: {{ words }}</li>
+              <li>Reading time: {{ time }}</li>
+            </ul>
           </div>
         </v-card-title>
       </v-card>
@@ -48,17 +50,20 @@ export default {
       const textOnly = h2t(this.noteBody);
       if (textOnly.length < 1) {
         return {
-          text: 'Comience a escribir!',
+          text: 'Start writing!',
           words: 0
         };
       }
-      return readingTime(textOnly, { locale: 'es' });
+      return readingTime(textOnly, { locale: 'en' });
     },
     time() {
       return this.timeData.text;
     },
     words() {
-      return `${this.timeData.words} palabras escritas`;
+      if (this.timeData.words === 1) {
+        return `${this.timeData.words} word`;
+      }
+      return `${this.timeData.words} words`;
     },
   }
 }
@@ -66,7 +71,7 @@ export default {
 
 <style lang="css">
   .note-info {
-    text-align: center;
+    text-align: left;
   }
   .title {
     line-height: 1.5px;
@@ -77,6 +82,7 @@ export default {
     z-index: 2;
     right: 15px;
     text-align: right;
+    cursor: pointer;
   }
   .firstrow {
     border-right: 1px solid black;

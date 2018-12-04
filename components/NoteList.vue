@@ -1,7 +1,7 @@
 <template>
   <v-flex
     class="note-container"
-    md4>
+    md3>
     <v-layout
       column
       fill-height
@@ -16,7 +16,7 @@
           <v-text-field
             v-model="search"
             class="search"
-            placeholder="Buscar"
+            placeholder="Search..."
             append-outer-icon="add_box"
             prepend-inner-icon="search"
             clearable

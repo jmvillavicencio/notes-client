@@ -20,10 +20,12 @@ const createStore = () => {
         state.selectedNote.dirty = isDirty;
       },
       addNote(state) {
+        const created = +new Date();
         state.notes.push({
           title: '',
           body: '',
-          created: +new Date(),
+          created,
+          updated: created,
           dirty: true,
         });
       },

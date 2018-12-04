@@ -9,9 +9,6 @@
       ripple
       @click="selectNote({ note, id })"
     >
-      <v-flex class="time-elapsed">
-        {{ created }}
-      </v-flex>
       <v-flex
         class="data"
         align-center
@@ -25,10 +22,15 @@
             v-html="body"
           />
         </div>
-        <v-icon
+        <div
           v-if="!note.dirty"
-          medium
-          class="save-icon">save</v-icon>
+          class="save-time-data"
+        >
+          <em>last saved: {{ updated }}</em>
+          <v-icon
+            medium
+          >save</v-icon>
+        </div>
       </v-flex>
     </v-layout>
   </a>
@@ -72,25 +74,27 @@ export default {
   data() {
     return {
       created: '1s',
+      updated: '1s',
       clearer: null,
     };
   },
   computed: {
     ...mapState(['selectedId']),
     title() {
-      return this.note.title || 'Comience escribiendo una nota';
+      return this.note.title || 'Start writing a note';
     },
     body() {
       if (!this.note.body) {
-        return 'Clickee sobre esta nota para comenzar a escribir';
+        return 'Click this note to start writing';
       }
 
       return h2t(this.note.body);
     },
   },
   mounted() {
-      this.clearer = setInterval(() => {
-      this.created = moment(this.note.created).fromNow().replace('ago', '').trim();
+    this.setTimestampsAgo();
+    this.clearer = setInterval(() => {
+      this.setTimestampsAgo();
     }, 30000);
   },
   destroyed() {
@@ -98,45 +102,46 @@ export default {
   },
   methods: {
     ...mapMutations(['selectNote']),
-  }
-}
+    setTimestampsAgo() {
+      this.created = moment(this.note.created).fromNow().replace('ago', '').trim();
+      this.updated = moment(this.note.updated).fromNow().trim();
+    },
+  },
+};
 </script>
 
 <style lang="css">
   .body {
-    max-height: 60px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 30px;
   }
   .note:not(.note-selected):hover {
-    border-left: 3px solid #0073ff;
+    background-color: #e6e6e6;
+  }
+  .note-selected {
+    background-color: #1976D2;
+    color: white;
   }
   .note {
     user-select: none;
     overflow: hidden;
     position: relative;
-  }
-  .note-selected {
-    border-left: 5px solid #0073ff;
+    border-bottom: 2px solid #eaeaea;
+    line-height: 55px;
+    padding: 0 15px;
+
   }
   .note-selected.note-unsaved {
-    border-left: 5px solid #d80000 !important;
+    border-left: 3px solid #d80000 !important;
   }
   .data-container {
     height: fit-content;
     width: 100%;
   }
-  .time-elapsed {
-    line-height: 96px;
-    max-width: 50px;
-    min-width: 50px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 18px;
-    color: #0000004d;
-  }
   .data {
-    display: flex;
-    border-bottom: 2px solid #eaeaea;
-    padding: 10px 5px 10px 0;
+    padding: 15px 0 15px 0;
     overflow: auto;
   }
   .title {
@@ -144,9 +149,21 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
-  .save-icon {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
+  .save-time-data {
+    /*position: absolute;
+    bottom: -10px;
+    right: 10px;*/
+    text-align: right;
+    line-height: 20px;
+  }
+  .save-time-data em {
+    color: rgba(0,0,0,0.3);
+  }
+  .save-time-data i {
+    color: #4caf50;
+    vertical-align: bottom;
+  }
+  .note-selected .save-time-data  em, .note-selected .save-time-data i {
+    color: white;
   }
 </style>

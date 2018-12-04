@@ -3,6 +3,7 @@
     <v-flex
       v-if="selectedNote"
       class="shower"
+      md9
     >
       <extra-data
         :note-body="selectedNote.body"
@@ -109,6 +110,7 @@ export default {
     ...mapActions(['saveLocalNote', 'saveRemoteNote', 'deleteNote']),
     ...mapMutations(['selectNote']),
     save() {
+      this.selectedNote.updated = +new Date();
       if (this.selectedNote.id) {
         return this.saveRemoteNote(this.selectedNote.id);
       }
